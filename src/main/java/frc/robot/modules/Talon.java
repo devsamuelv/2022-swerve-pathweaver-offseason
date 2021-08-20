@@ -169,7 +169,7 @@ public class Talon extends TalonFX {
     this.config.primaryPID.selectedFeedbackCoefficient = 0.5;
   }
 
-  public void Reconfigure(TalonFXConfiguration _config) {
+  public void ReConfigure(TalonFXConfiguration _config) {
     this.config = _config;
 
     this.configAllSettings(_config);
