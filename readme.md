@@ -8,5 +8,6 @@
 - [ ] base
 - [ ] intake
 - [ ] hopper
+- [ ] climbers
 - [ ] pathweaver
 - [ ] odometry tuning
