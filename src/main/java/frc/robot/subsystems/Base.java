@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.CANCoder;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -20,6 +22,8 @@ public class Base extends SubsystemBase {
   Translation2d m_frontRight = new Translation2d(1, 1);
   Translation2d m_backLeft = new Translation2d(-1, -1);
   Translation2d m_backRight = new Translation2d(-1, 1);
+
+  AHRS navx = new AHRS();
 
   CANCoder frontLeftCANCoder = new CANCoder(Constants.frontLeftCANCoderId);
   CANCoder frontRightCANCoder = new CANCoder(Constants.frontRightCANCoderId);
@@ -49,7 +53,10 @@ public class Base extends SubsystemBase {
   SwerveModuleState backLeftOptimzed = SwerveModuleState.optimize(backLeft, getCANCoderPosition(backLeftCANCoder));
   SwerveModuleState backRightOptimzed = SwerveModuleState.optimize(backRight, getCANCoderPosition(backRightCANCoder));
 
-  // SwerveDriveOdometry odometry = new SwerveDriveOdometry();
+  SwerveDriveOdometry odometry = new SwerveDriveOdometry(m_kinematics, getGyroHeading(),
+      new Pose2d(0, 0, new Rotation2d()));
+
+  Pose2d currentPose = new Pose2d();
 
   /** Creates a new ExampleSubsystem. */
   public Base() {
@@ -58,6 +65,7 @@ public class Base extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    currentPose = odometry.update(getGyroHeading(), frontLeft, frontRight, backLeft, backRight);
   }
 
   public void RunMotors() {
@@ -68,8 +76,8 @@ public class Base extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void getGyro() {
-
+  public Rotation2d getGyroHeading() {
+    return Rotation2d.fromDegrees(navx.getAngle());
   }
 
   public Rotation2d getCANCoderPosition(CANCoder _CANCoder) {
