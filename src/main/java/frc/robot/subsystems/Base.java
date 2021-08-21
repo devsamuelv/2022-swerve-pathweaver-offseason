@@ -65,7 +65,8 @@ public class Base extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    currentPose = odometry.update(getGyroHeading(), frontLeft, frontRight, backLeft, backRight);
+    currentPose = odometry.update(getGyroHeading(), frontLeftOptimzed, frontRightOptimzed, backLeftOptimzed,
+        backRightOptimzed);
   }
 
   public void RunMotors() {
