@@ -4,10 +4,10 @@
 
 - [ ] kinematics
 - [ ] odometry
-- [ ] shooter
-- [ ] base
-- [ ] intake
-- [ ] hopper
-- [ ] climbers
+- [ ] **(subsystem)** shooter
+- [ ] **(subsystem)** base
+- [ ] **(subsystem)** intake
+- [ ] **(subsystem)** hopper
+- [ ] **(subsystem)** climbers
 - [ ] pathweaver
 - [ ] odometry tuning
