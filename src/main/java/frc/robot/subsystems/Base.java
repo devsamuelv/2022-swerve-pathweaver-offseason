@@ -18,6 +18,8 @@ import frc.robot.Constants;
 
 // Stoped at https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html page of the docs
 public class Base extends SubsystemBase {
+  double kMaxSpeed = 3.0;
+
   Translation2d m_frontLeft = new Translation2d(1, -1);
   Translation2d m_frontRight = new Translation2d(1, 1);
   Translation2d m_backLeft = new Translation2d(-1, -1);
@@ -69,7 +71,24 @@ public class Base extends SubsystemBase {
         backRightOptimzed);
   }
 
-  public void RunMotors() {
+  /**
+   * Method to drive the robot using joystick info.
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  @SuppressWarnings("ParameterName")
+  public void Drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    var swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, navx.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
+    m_frontRight.setDesiredState(states[1]);
+    m_backLeft.setDesiredState(states[2]);
+    m_backRight.setDesiredState(states[3]);
   }
 
   @Override

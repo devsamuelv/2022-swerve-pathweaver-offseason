@@ -19,4 +19,5 @@ public final class Constants {
   public static int frontRightCANCoderId = 1;
   public static int backLeftCANCoderId = 2;
   public static int backRightCANCoderId = 3;
+  public static double kMaxAngularSpeed = Math.PI;
 }

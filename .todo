@@ -1,0 +1,10 @@
+Pathweaver:
+  ☐ kinematics @high
+  ☐ odometry @high
+
+Subsystems:
+  ☐ Shooter @high
+  ☐ Base @high
+  ☐ Intake @high
+  ☐ Hopper @high
+  ☐ Climbers @high
