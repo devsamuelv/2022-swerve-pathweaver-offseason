@@ -15,11 +15,10 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.modules.SwervePod;
 
 // Stoped at https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html page of the docs
 public class Base extends SubsystemBase {
-  double kMaxSpeed = 3.0;
-
   Translation2d m_frontLeft = new Translation2d(1, -1);
   Translation2d m_frontRight = new Translation2d(1, 1);
   Translation2d m_backLeft = new Translation2d(-1, -1);
@@ -47,6 +46,11 @@ public class Base extends SubsystemBase {
   SwerveModuleState frontRight = states[1];
   SwerveModuleState backLeft = states[2];
   SwerveModuleState backRight = states[3];
+
+  SwervePod frontLeftPod = new SwervePod(6, 3, Constants.frontLeftCANCoderId);
+  SwervePod frontRightPod = new SwervePod(5, 2, Constants.frontRightCANCoderId);
+  SwervePod backLeftPod = new SwervePod(8, 7, Constants.backLeftCANCoderId);
+  SwervePod backRightPod = new SwervePod(9, 1, Constants.backRightCANCoderId);
 
   SwerveModuleState frontLeftOptimzed = SwerveModuleState.optimize(frontLeft, getCANCoderPosition(frontLeftCANCoder));
   SwerveModuleState frontRightOptimzed = SwerveModuleState.optimize(frontRight,
@@ -85,10 +89,24 @@ public class Base extends SubsystemBase {
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, navx.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
-    m_frontRight.setDesiredState(states[1]);
-    m_backLeft.setDesiredState(states[2]);
-    m_backRight.setDesiredState(states[3]);
+
+    this.setModuleStates(swerveModuleStates);
+  }
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kMaxSpeedMetersPerSecond);
+    frontRightPod.setDesiredState(desiredStates[1]);
+    frontLeftPod.setDesiredState(desiredStates[0]);
+    backLeftPod.setDesiredState(desiredStates[2]);
+    backRightPod.setDesiredState(desiredStates[3]);
+  }
+
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void resetOdometry(Pose2d pose, Rotation2d gyroAngle) {
+    odometry.resetPosition(pose, gyroAngle);
   }
 
   @Override
@@ -98,6 +116,14 @@ public class Base extends SubsystemBase {
 
   public Rotation2d getGyroHeading() {
     return Rotation2d.fromDegrees(navx.getAngle());
+  }
+
+  public double getTurnRate() {
+    return navx.getRate() * (Constants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  public void resetGyro() {
+    navx.reset();
   }
 
   public Rotation2d getCANCoderPosition(CANCoder _CANCoder) {

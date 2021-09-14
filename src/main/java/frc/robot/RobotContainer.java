@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.Auto;
+import frc.robot.commands.DriveBase;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Base;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,8 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    this.base
+        .setDefaultCommand(new DriveBase(base, () -> mainJS.getX(), () -> mainJS.getY(), () -> mainJS.getRawAxis(3)));
   }
 
   /**

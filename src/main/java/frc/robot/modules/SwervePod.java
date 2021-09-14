@@ -62,7 +62,7 @@ public class SwervePod {
   }
 
   public SwerveModuleState getState() {
-    // if (int) motor.getHandle does not work try using the deviceId
+    // if (int) motor.getHandle does not work try using the deviceId or baseId
     return new SwerveModuleState(EncoderJNI.getEncoderRate((int) speedMotor.getHandle()),
         new Rotation2d(Math.toRadians(canCoder.getPosition())));
   }
@@ -79,7 +79,7 @@ public class SwervePod {
 
     // Calculate the drive output from the drive PID controller.
     // if (int) motor.getHandle does not work try using the deviceId
-    final double driveOutput = m_drivePIDController.calculate(EncoderJNI.getEncoderRate((int) speedMotor.getHandle()),
+    final double driveOutput = m_drivePIDController.calculate(speedMotor.getSelectedSensorVelocity(),
         state.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
