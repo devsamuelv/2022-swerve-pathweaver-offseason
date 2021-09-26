@@ -15,11 +15,11 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static int frontLeftCANCoderId = 0;
-  public static int frontRightCANCoderId = 1;
-  public static int backLeftCANCoderId = 2;
-  public static int backRightCANCoderId = 3;
+  public static int frontLeftCANCoderId = 60;
+  public static int frontRightCANCoderId = 22;
+  public static int backLeftCANCoderId = 21;
+  public static int backRightCANCoderId = 20;
   public static double kMaxAngularSpeed = Math.PI;
-  public static double kMaxSpeedMetersPerSecond = 3.0;
+  public static double kMaxSpeedMetersPerSecond = 1.0;
   public static boolean kGyroReversed = false;
 }

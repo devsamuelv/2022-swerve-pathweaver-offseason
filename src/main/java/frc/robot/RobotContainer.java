@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.Auto;
 import frc.robot.commands.DriveBase;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.PIDTester;
 import frc.robot.subsystems.Base;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,8 +42,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    this.base
-        .setDefaultCommand(new DriveBase(base, () -> mainJS.getX(), () -> mainJS.getY(), () -> mainJS.getRawAxis(3)));
+    this.base.setDefaultCommand(
+        new DriveBase(base, () -> mainJS.getRawAxis(1), () -> mainJS.getRawAxis(2), () -> mainJS.getRawAxis(3)));
+    // new JoystickButton(mainJS, 1).toggleWhenPressed(new PIDTester(base));
   }
 
   /**

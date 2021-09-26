@@ -10,49 +10,60 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.hal.EncoderJNI;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 
 /** Add your docs here. */
 public class SwervePod {
-  double kWheelRadius = 0.0508;
-  int kEncoderResolution = 4096;
+  double kWheelRadius = 2;
+  int kEncoderResolution = 2048;
 
   double kModuleMaxAngularVelocity = Constants.kMaxAngularSpeed;
   double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
   // tune the pid values for the robot
-  PIDController m_drivePIDController = new PIDController(1, 0, 0);
-  ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1, 0, 0,
+  // (0.1, 0.0, 20.0, 1023.0 / 6800.0, 300, 0.50)
+  PIDController m_drivePIDController = new PIDController(50, 0, 0);
+  ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1.5, 0, 0,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
-  SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+  SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0, 0.2);
+  SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
-  TalonFX speedMotor;
-  TalonFX angularMotor;
+  SpeedTalon speedMotor;
+  AngleTalon angularMotor;
   CANCoder canCoder;
 
+  public void setPID(double kP, double kI, double kD) {
+    m_drivePIDController.setPID(kP, kI, kD);
+  }
+
   public SwervePod(int speedMotorId, int angularMotorId, int canCoderId) {
-    this.speedMotor = new TalonFX(speedMotorId);
-    this.angularMotor = new TalonFX(angularMotorId);
+    this.speedMotor = new SpeedTalon(speedMotorId);
+    this.angularMotor = new AngleTalon(angularMotorId);
     this.canCoder = new CANCoder(canCoderId);
 
+    // this.m_driveFeedforward.maxAchievableAcceleration(12, 100);
     this.m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public SwervePod(int speedMotorId, int angularMotorId, int canCoderId, double kWheelRadius, int kEncoderResolution) {
-    this.speedMotor = new TalonFX(speedMotorId);
-    this.angularMotor = new TalonFX(angularMotorId);
+    this.speedMotor = new SpeedTalon(speedMotorId);
+    this.angularMotor = new AngleTalon(angularMotorId);
     this.canCoder = new CANCoder(canCoderId);
 
     this.kWheelRadius = kWheelRadius;
@@ -79,17 +90,35 @@ public class SwervePod {
 
     // Calculate the drive output from the drive PID controller.
     // if (int) motor.getHandle does not work try using the deviceId
-    final double driveOutput = m_drivePIDController.calculate(speedMotor.getSelectedSensorVelocity(),
-        state.speedMetersPerSecond);
+    // this is causing the motor to go forward and backward
+
+    double rps = (speedMotor.getSelectedSensorVelocity() / 2048);
+
+    SmartDashboard.putNumber("v", rps * 0.12);
+    SmartDashboard.putNumber("rps", rps);
+
+    final double driveOutput = m_drivePIDController.calculate(rps * 0.12, state.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput = m_turningPIDController.calculate(canCoder.getPosition(), state.angle.getRadians());
+    final double turnOutput = m_turningPIDController.calculate(canCoder.getPosition(), state.angle.getDegrees());
 
     final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    speedMotor.set(ControlMode.Current, driveOutput + driveFeedforward);
-    angularMotor.set(ControlMode.Current, turnOutput + turnFeedforward);
+    SmartDashboard.putNumber("driveOutput", driveOutput);
+    SmartDashboard.putNumber("turnOutput", turnOutput);
+    SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + "] Desired Degress: ",
+        desiredState.angle.getDegrees());
+    SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + "] Degress: ",
+        canCoder.getPosition());
+    SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + " Velocity: ]",
+        speedMotor.getSelectedSensorVelocity());
+
+    if (driveOutput > 0.1 || driveOutput < -0.1) {
+      speedMotor.set(ControlMode.Current, driveOutput + driveFeedforward);
+    }
+
+    angularMotor.set(ControlMode.Current, turnOutput);
   }
 }

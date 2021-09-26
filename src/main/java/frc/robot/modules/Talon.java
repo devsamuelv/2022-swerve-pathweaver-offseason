@@ -2,6 +2,7 @@ package frc.robot.modules;
 
 import javax.annotation.Nullable;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -98,8 +99,10 @@ public class Talon extends TalonFX {
     // fix the unit conversion issue
     double targetPositionRotations = _position * (perRot / unit); // this resolves to 72.5 ticks per degree
     this.set(TalonFXControlMode.Position, targetPositionRotations);
+  }
 
-    SmartDashboard.putNumber("targetPositionRotations", targetPositionRotations);
+  public void setVelocity(double vel) {
+    this.set(ControlMode.Velocity, vel);
   }
 
   /**

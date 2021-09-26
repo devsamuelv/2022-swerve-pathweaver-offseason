@@ -13,16 +13,17 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.modules.SwervePod;
 
 // Stoped at https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html page of the docs
 public class Base extends SubsystemBase {
-  Translation2d m_frontLeft = new Translation2d(1, -1);
-  Translation2d m_frontRight = new Translation2d(1, 1);
-  Translation2d m_backLeft = new Translation2d(-1, -1);
-  Translation2d m_backRight = new Translation2d(-1, 1);
+  Translation2d m_frontLeft = new Translation2d(1, -0.9);
+  Translation2d m_frontRight = new Translation2d(1, 0.9);
+  Translation2d m_backLeft = new Translation2d(-1, -0.9);
+  Translation2d m_backRight = new Translation2d(-1, 0.9);
 
   AHRS navx = new AHRS();
 
@@ -47,10 +48,10 @@ public class Base extends SubsystemBase {
   SwerveModuleState backLeft = states[2];
   SwerveModuleState backRight = states[3];
 
-  SwervePod frontLeftPod = new SwervePod(6, 3, Constants.frontLeftCANCoderId);
-  SwervePod frontRightPod = new SwervePod(5, 2, Constants.frontRightCANCoderId);
-  SwervePod backLeftPod = new SwervePod(8, 7, Constants.backLeftCANCoderId);
-  SwervePod backRightPod = new SwervePod(9, 1, Constants.backRightCANCoderId);
+  SwervePod frontLeftPod = new SwervePod(3, 7, Constants.frontLeftCANCoderId);
+  SwervePod frontRightPod = new SwervePod(8, 5, Constants.frontRightCANCoderId);
+  SwervePod backLeftPod = new SwervePod(9, 2, Constants.backLeftCANCoderId);
+  SwervePod backRightPod = new SwervePod(4, 6, Constants.backRightCANCoderId);
 
   SwerveModuleState frontLeftOptimzed = SwerveModuleState.optimize(frontLeft, getCANCoderPosition(frontLeftCANCoder));
   SwerveModuleState frontRightOptimzed = SwerveModuleState.optimize(frontRight,
@@ -71,8 +72,9 @@ public class Base extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    currentPose = odometry.update(getGyroHeading(), frontLeftOptimzed, frontRightOptimzed, backLeftOptimzed,
-        backRightOptimzed);
+    // currentPose = odometry.update(getGyroHeading(), frontLeftOptimzed,
+    // frontRightOptimzed, backLeftOptimzed,
+    // backRightOptimzed);
   }
 
   /**
@@ -95,10 +97,18 @@ public class Base extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kMaxSpeedMetersPerSecond);
+
     frontRightPod.setDesiredState(desiredStates[1]);
     frontLeftPod.setDesiredState(desiredStates[0]);
     backLeftPod.setDesiredState(desiredStates[2]);
     backRightPod.setDesiredState(desiredStates[3]);
+  }
+
+  public void setPID(double kP, double kI, double kD) {
+    frontRightPod.setPID(kP, kI, kD);
+    frontLeftPod.setPID(kP, kI, kD);
+    backRightPod.setPID(kP, kI, kD);
+    backLeftPod.setPID(kP, kI, kD);
   }
 
   public Pose2d getPose() {
