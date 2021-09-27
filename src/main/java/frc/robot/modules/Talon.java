@@ -101,6 +101,18 @@ public class Talon extends TalonFX {
     this.set(TalonFXControlMode.Position, targetPositionRotations);
   }
 
+  // public void setPosition(double _position) {
+  // double unit = 360;
+
+  // // the base value is 26120, 26220
+  // double perRot = 2048;// 26120;
+
+  // // fix the unit conversion issue
+  // double targetPositionRotations = _position * (perRot / unit); // this
+  // resolves to 72.5 ticks per degree
+  // this.set(TalonFXControlMode.Position, targetPositionRotations);
+  // }
+
   public void setVelocity(double vel) {
     this.set(ControlMode.Velocity, vel);
   }

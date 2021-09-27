@@ -105,7 +105,7 @@ class AngleConstants {
    * Gains used in Positon Closed Loop, to be adjusted accordingly Gains(kp, ki,
    * kd, kf, izone, peak output);
    */
-  public static final Gains kGains = new Gains(0.02, 0.0, 0.0, 0, 0, 1.0);
+  public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0, 100, 0.50);
 
   /** ---- Flat constants, you should not need to change these ---- */
   /*

@@ -11,19 +11,20 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.hal.EncoderJNI;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Talon;
+import frc.robot.modules.Talon;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import com.swervedrivespecialties.swervelib.ctre.*;
+import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -37,12 +38,12 @@ public class SwervePod {
   // tune the pid values for the robot
   // (0.1, 0.0, 20.0, 1023.0 / 6800.0, 300, 0.50)
   PIDController m_drivePIDController = new PIDController(50, 0, 0);
-  ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1.5, 0, 0,
+  ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1, 0.0, 0.0,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
   SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0, 0.2);
-  SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
+  SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0, 0.2);
 
   SpeedTalon speedMotor;
   AngleTalon angularMotor;
@@ -56,6 +57,8 @@ public class SwervePod {
     this.speedMotor = new SpeedTalon(speedMotorId);
     this.angularMotor = new AngleTalon(angularMotorId);
     this.canCoder = new CANCoder(canCoderId);
+
+    this.canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
     // this.m_driveFeedforward.maxAchievableAcceleration(12, 100);
     this.m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -102,16 +105,17 @@ public class SwervePod {
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput = m_turningPIDController.calculate(canCoder.getPosition(), state.angle.getDegrees());
+    final double turnOutput = m_turningPIDController.calculate(canCoder.getAbsolutePosition(),
+        state.angle.getDegrees());
 
     final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     SmartDashboard.putNumber("driveOutput", driveOutput);
-    SmartDashboard.putNumber("turnOutput", turnOutput);
+    SmartDashboard.putNumber("turnOutput [" + this.angularMotor.getDeviceID() + "] ", turnOutput);
     SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + "] Desired Degress: ",
         desiredState.angle.getDegrees());
     SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + "] Degress: ",
-        canCoder.getPosition());
+        canCoder.getAbsolutePosition());
     SmartDashboard.putNumber("SwervePod Talon[" + this.speedMotor.getDeviceID() + " Velocity: ]",
         speedMotor.getSelectedSensorVelocity());
 
@@ -119,6 +123,7 @@ public class SwervePod {
       speedMotor.set(ControlMode.Current, driveOutput + driveFeedforward);
     }
 
-    angularMotor.set(ControlMode.Current, turnOutput);
+    // angularMotor.setPosition(state.angle.getDegrees());
+    angularMotor.set(ControlMode.Current, Math.floor(turnOutput + turnFeedforward));
   }
 }
