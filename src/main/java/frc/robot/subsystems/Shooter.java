@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Spark;
@@ -13,11 +15,13 @@ public class Shooter extends SubsystemBase {
   TalonFX shooterLeft = new TalonFX(0);
   TalonFX shooterRight = new TalonFX(0);
   Spark intake = new Spark(0);
+  BooleanSupplier fire;
 
   double targetVel = 1000;
 
   /** Creates a new Shooter. */
-  public Shooter() {
+  public Shooter(BooleanSupplier fire) {
+    this.fire = fire;
   }
 
   public void revUp() {
@@ -25,7 +29,7 @@ public class Shooter extends SubsystemBase {
     this.shooterRight.set(ControlMode.Velocity, targetVel);
 
     if (shooterLeft.getSelectedSensorVelocity() >= (targetVel - 100)
-        && shooterRight.getSelectedSensorVelocity() >= (targetVel - 100)) {
+        && shooterRight.getSelectedSensorVelocity() >= (targetVel - 100) && fire.getAsBoolean()) {
       intake.set(-0.8);
     } else {
       intake.set(0);
