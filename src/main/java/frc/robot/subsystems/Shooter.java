@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
   TalonFX shooterLeft = new TalonFX(0);
@@ -17,19 +18,18 @@ public class Shooter extends SubsystemBase {
   Spark intake = new Spark(0);
   BooleanSupplier fire;
 
-  double targetVel = 1000;
-
   /** Creates a new Shooter. */
   public Shooter(BooleanSupplier fire) {
     this.fire = fire;
   }
 
   public void revUp() {
-    this.shooterLeft.set(ControlMode.Velocity, targetVel);
-    this.shooterRight.set(ControlMode.Velocity, targetVel);
+    this.shooterLeft.set(ControlMode.Velocity, Constants.SHOOTER_TARGET_VELOCITY);
+    this.shooterRight.set(ControlMode.Velocity, Constants.SHOOTER_TARGET_VELOCITY);
 
-    if (shooterLeft.getSelectedSensorVelocity() >= (targetVel - 100)
-        && shooterRight.getSelectedSensorVelocity() >= (targetVel - 100) && fire.getAsBoolean()) {
+    if (shooterLeft.getSelectedSensorVelocity() >= (Constants.SHOOTER_TARGET_VELOCITY - 100)
+        && shooterRight.getSelectedSensorVelocity() >= (Constants.SHOOTER_TARGET_VELOCITY - 100)
+        && fire.getAsBoolean()) {
       intake.set(-0.8);
     } else {
       intake.set(0);

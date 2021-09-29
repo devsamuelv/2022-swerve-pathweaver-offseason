@@ -15,34 +15,46 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  // CANCoder stuff
   public static int frontLeftCANCoderId = 60;
   public static int frontRightCANCoderId = 22;
   public static int backLeftCANCoderId = 21;
   public static int backRightCANCoderId = 20;
+
+  // PID stuff
   public static double kMaxAngularSpeed = Math.PI;
   public static double kMaxSpeedMetersPerSecond = 1.0;
   public static boolean kGyroReversed = false;
 
+  // Shooter stuff
+  public static final int SHOOTER_LEFT_MOTOR_ID = 0;
+  public static final int SHOOTER_RIGHT_MOTOR_ID = 0;
+  public static final int SHOOTER_INTAKE_MOTOR_ID = 0;
+  public static final double SHOOTER_TARGET_VELOCITY = 1000;
+
+  // Drivetrain Stuff
   public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.0508;
   public static final double DRIVETRAIN_WHEELBASE_METERS = 0.813;
 
-  public static final int DRIVETRAIN_PIGEON_ID = 0;
-
+  // Front left pod
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 3;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 4;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
   public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(185.0);
 
+  // front right pod
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 4;
   public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(220.0);
 
+  // back left pod
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 1;
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 3;
   public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(225.0);
 
+  // back right pod
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
