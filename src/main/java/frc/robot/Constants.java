@@ -21,6 +21,8 @@ public final class Constants {
   public static int backLeftCANCoderId = 21;
   public static int backRightCANCoderId = 20;
 
+  public static int INTAKE_MOTOR_ID = 33;
+
   // PID stuff
   public static double kMaxAngularSpeed = Math.PI;
   public static double kMaxSpeedMetersPerSecond = 1.0;
