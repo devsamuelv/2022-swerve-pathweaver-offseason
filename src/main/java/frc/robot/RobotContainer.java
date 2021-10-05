@@ -32,6 +32,7 @@ public class RobotContainer {
   private final NewBase newBase = new NewBase();
   private final Intake intake = new Intake();
   public final Joystick mainJS = new Joystick(0);
+  public final Joystick towerJS = new Joystick(1);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

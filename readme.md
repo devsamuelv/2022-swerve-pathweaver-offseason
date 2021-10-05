@@ -1,5 +1,10 @@
 # 2022 FRC offseason swerve bot
 
+### CAN Id's
+
+- 44
+- 45
+
 ### Todo
 
 - [ ] kinematics
