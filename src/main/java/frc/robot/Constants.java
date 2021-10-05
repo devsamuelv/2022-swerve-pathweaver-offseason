@@ -21,7 +21,7 @@ public final class Constants {
   public static int backLeftCANCoderId = 21;
   public static int backRightCANCoderId = 20;
 
-  public static int INTAKE_MOTOR_ID = 33;
+  public static int INTAKE_MOTOR_ID = 30;
 
   // PID stuff
   public static double kMaxAngularSpeed = Math.PI;
@@ -42,23 +42,23 @@ public final class Constants {
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 3;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 4;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
-  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(185.0);
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(35.0);
 
   // front right pod
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 4;
-  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(220.0);
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(193.0); // Good, 187
 
   // back left pod
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 1;
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 3;
-  public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(225.0);
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(157.0); // Good
 
   // back right pod
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
-  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(186.0);
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(120.0); // 126
 }

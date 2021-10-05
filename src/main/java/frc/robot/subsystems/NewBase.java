@@ -68,16 +68,29 @@ public class NewBase extends SubsystemBase {
     return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
+  public boolean isInverted() {
+    return getRotation().getDegrees() <= 190 && getRotation().getDegrees() > 90
+        || getRotation().getDegrees() >= 290 && getRotation().getDegrees() < 90;
+  }
+
+  public double getDirection() {
+    if (isInverted()) {
+      return 1.0;
+    }
+
+    return -1.0;
+  }
+
   public void drive(ChassisSpeeds speeds) {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
-    frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+    frontLeftModule.set((states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE) * -1.0,
         states[0].angle.getRadians());
     frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
         states[1].angle.getRadians());
     backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
         states[2].angle.getRadians());
-    backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+    backRightModule.set((states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE) * -1.0,
         states[3].angle.getRadians());
   }
 

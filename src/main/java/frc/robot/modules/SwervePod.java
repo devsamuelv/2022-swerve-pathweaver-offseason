@@ -81,6 +81,10 @@ public class SwervePod {
         new Rotation2d(Math.toRadians(canCoder.getPosition())));
   }
 
+  // public void setInverted(boolean _inverted) {
+  // this.sp
+  // }
+
   /**
    * Sets the desired state for the module.
    *

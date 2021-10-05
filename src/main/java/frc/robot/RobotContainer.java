@@ -52,7 +52,6 @@ public class RobotContainer {
 
     this.newBase.setDefaultCommand(
         new NewDrive(newBase, () -> mainJS.getRawAxis(1), () -> mainJS.getRawAxis(0), () -> mainJS.getRawAxis(2)));
-    // new JoystickButton(mainJS, 1).toggleWhenPressed(new PIDTester(base));
   }
 
   /**
