@@ -29,10 +29,10 @@ public final class Constants {
   public static boolean kGyroReversed = false;
 
   // Shooter stuff
-  public static final int SHOOTER_LEFT_MOTOR_ID = 0;
-  public static final int SHOOTER_RIGHT_MOTOR_ID = 0;
+  public static final int SHOOTER_LEFT_MOTOR_ID = 44;
+  public static final int SHOOTER_RIGHT_MOTOR_ID = 45;
   public static final int SHOOTER_INTAKE_MOTOR_ID = 0;
-  public static final double SHOOTER_TARGET_VELOCITY = 1000;
+  public static final double SHOOTER_TARGET_VELOCITY = 500;
 
   // Drivetrain Stuff
   public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.0508;

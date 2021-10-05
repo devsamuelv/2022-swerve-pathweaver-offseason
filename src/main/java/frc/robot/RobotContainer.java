@@ -13,9 +13,11 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IntakeOn;
 import frc.robot.commands.NewDrive;
 import frc.robot.commands.PIDTester;
+import frc.robot.commands.ShooterStartUp;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NewBase;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -32,6 +34,7 @@ public class RobotContainer {
   private final NewBase newBase = new NewBase();
   private final Intake intake = new Intake();
   public final Joystick mainJS = new Joystick(0);
+  private final Shooter shooter = new Shooter();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -49,7 +52,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(mainJS, 1).whileHeld(new IntakeOn(intake));
-
+    new JoystickButton(mainJS, 3).whileHeld(new ShooterStartUp(shooter, intake));
     this.newBase.setDefaultCommand(
         new NewDrive(newBase, () -> mainJS.getRawAxis(1), () -> mainJS.getRawAxis(0), () -> mainJS.getRawAxis(2)));
   }
