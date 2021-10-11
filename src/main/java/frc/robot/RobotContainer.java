@@ -4,20 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.Auto;
-import frc.robot.commands.DriveBase;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.IntakeOn;
-import frc.robot.commands.NewDrive;
-import frc.robot.commands.PIDTester;
 import frc.robot.subsystems.Base;
-import frc.robot.subsystems.Intake;
+import frc.robot.commands.NewDrive;
 import frc.robot.subsystems.NewBase;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -30,9 +24,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Base base = new Base();
   private final NewBase newBase = new NewBase();
-  private final Intake intake = new Intake();
+  // private final Intake intake = new Intake();
+  // private final Hopper hopper = new Hopper();
+  // private final Shooter shooter = new Shooter();
   public final Joystick mainJS = new Joystick(0);
-  public final Joystick towerJS = new Joystick(1);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -49,7 +44,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(mainJS, 1).whileHeld(new IntakeOn(intake));
+    // new JoystickButton(mainJS, 1).whileHeld(new IntakeOn(intake));
+    // new JoystickButton(mainJS, 3).whileHeld(new ShooterStartUp(shooter, intake,
+    // hopper));
 
     this.newBase.setDefaultCommand(
         new NewDrive(newBase, () -> mainJS.getRawAxis(1), () -> mainJS.getRawAxis(0), () -> mainJS.getRawAxis(2)));
